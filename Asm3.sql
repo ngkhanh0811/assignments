@@ -26,15 +26,69 @@ NgayDK date
 )
 
 insert into GiayDK values 
-(N'Nguyễn Bá Khánh', 00123456789, N'Hà Nội', '0987729543', N'Trả trước', '2021-12-31')
-(N'Nguyễn Bá Khánh', 00123456789, N'Hà Nội', '0392652354', N'Trả trước', '2021-12-31')
-(N'Tạ Duy Linh', 00123456787, N'Hà Nội', '0912531353', N'Trả trước', '2021-12-31')
-(N'Dinh Quang Anh', 00123456788, N'Hà Nội', '091242353', N'Trả trước', '2021-12-28')
-(N'Nguyễn Mạnh Kiên', 00123456786, N'Hà Nội', '092351543', N'Trả trước', '2021-12-30')
-(N'Vũ Viết Quý', 00123456785, N'Hà Nội', '012412453', N'Trả trước', '2021-12-30')
-(N'Lương Viết Hoàng', 00123456784, N'Hà Nội', '03512541231', N'Trả trước', '2021-12-26')
+(N'Nguyễn Bá Khánh', 00123456789, N'Hà Nội', '0987729543', N'Trả trước', '2021-12-31'),
+(N'Nguyễn Bá Khánh', 00123456789, N'Hà Nội', '0392652354', N'Trả trước', '2021-12-31'),
+(N'Tạ Duy Linh', 0012345687, N'Thái Nguyên', '0912531353', N'Trả trước', '2021-12-31'),
+(N'Đinh Quang Anh', 00123456788, N'Ninh Bình', '091242353', N'Trả trước', '2021-12-28'),
+(N'Nguyễn Mạnh Kiên', 00123456786, N'Nhà Thầy', '092351543', N'Trả trước', '2021-12-30'),
+(N'Tạ Văn Minh', 00123456785, N'Thanh Hóa', '012412453', N'Trả trước', '2021-12-30'),
+(N'Lương Viết Hoàng', 00123456784, N'Hạ Long', '03512541231', N'Trả trước', '2021-12-26')
 
 create table ThanhPho(
 MaTP int,
 DiaChi nvarchar(100) primary key
 )
+
+insert into ThanhPho values 
+(1, N'Hà Nội'),
+(2, N'Thái Nguyên'),
+(3, N'Hạ Long'),
+(3, N'Ninh Bình'),
+(4, N'Thanh Hóa'),
+(5, N'Thái Bình'),
+(9999, N'Nhà Thầy')
+
+--Lấy toàn bộ thông tin khách hàng
+select * from ThongTin
+
+--Lấy toàn bộ thông tin khách hàng đã đăng kí thuê bao
+select * from GiayDK
+
+--Lấy toàn bộ thông tin của thuê bao có số 0987729543
+select * from GiayDK where ThueBao = '0987729543'
+
+--Lấy toàn bộ thông tin của khách hàng có số chứng minh thư 0123456789
+select * from ThongTin where SoCMT = '00123456789'
+
+--Lấy toàn bộ số thuê bao mà khách hàng có số chứng minh thư 0123456789 đã đăng kí
+select ThueBao from GiayDK where SoCMT = '00123456789'
+
+--Lấy toàn bộ số thuê bao được đăng kí vào ngày 31 tháng 12 năm 2021
+select ThueBao from GiayDK where NgayDK = '2021-12-31'
+
+--Lấy toàn bộ số thuê bao đăng kí có địa chỉ tại Hà Nội
+select ThueBao from GiayDK where DiaChi = N'Hà Nội'
+
+--Đếm tổng số khách hàng đăng kí thue bao
+select COUNT(TenKH) from ThongTin 
+
+--Đếm tổng số thuê bao đã đăng kí
+select COUNT(ThueBao) from GiayDK
+
+--Đếm tổng số thuê bao đăng kí trong ngày 31 tháng 12 năm 2021
+select COUNT(NgayDK) from GiayDK where NgayDK='2021-12-31'
+
+--Hiển thị toàn bộ thông tin thuê bao, khách hàng đã đăng kí thuê bao
+select * from GiayDK
+
+--Thêm ràng buộc not null cho trường Ngày đăng kí
+alter table GiayDK
+alter column NgayDK date not null
+
+--Thêm ràng buộc ngày đăng kí phải nhỏ hơn ngày hiện tại cho trường ngày đăng kí
+alter table GiayDK
+add constraint check_date check (NgayDK < Getdate())
+
+--Thêm trường điểm thưởng cho bảng giấy đăng kí
+alter table GiayDK
+add DiemThuong int 
