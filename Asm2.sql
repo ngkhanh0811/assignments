@@ -96,4 +96,4 @@ add constraint price check (Gia>0)
 
 --Cập nhật yêu cầu số điện thoại phải bắt đầu bằng số 0 -> chuyển kiểu dữ liệu sang nvarchar hoặc varchar
 alter table Hang
-alter column DienThoai nvarchar(100)jj
+alter column DienThoai nvarchar(100)
