@@ -91,3 +91,15 @@ add constraint check_date check (NgaySX<=getdate())
 --Thêm một trường phiên bản cho bảng Sản Phẩm
 alter table SanPham
 add PhienBan varchar(100)
+
+--Tạo index và view 
+create index IX_PerSon on Nguoi(Ten)
+
+create view View_SanPham_NCTN as 
+select MaSP, NgaySX, Ten from Phieu
+
+create view View_SanPham as
+select MaSP, NgaySX, TenLoai from Phieu
+
+create view View_SanPham_Top as
+select MaSP, TenLoai, NgaySX from Phieu

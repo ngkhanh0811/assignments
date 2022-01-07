@@ -97,3 +97,17 @@ add constraint price check (Gia>0)
 --Cập nhật yêu cầu số điện thoại phải bắt đầu bằng số 0 -> chuyển kiểu dữ liệu sang nvarchar hoặc varchar
 alter table Hang
 alter column DienThoai nvarchar(100)
+
+--Tạo View và Index 
+create index IX_TenHang on Hang(TenHang)
+create index IX_MoTa on Kho(MoTa)
+
+create view View_SanPham as
+select MaSP, TenSP, Gia from Kho
+
+select * from View_SanPham_Hang
+
+create view View_SanPham_Hang as
+select Kho.MaSP, Kho.TenSP, Hang.TenHang from Kho
+join Hang
+on Kho.MaHang = Hang.MaHang

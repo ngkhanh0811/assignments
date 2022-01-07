@@ -92,3 +92,14 @@ add constraint check_date check (NgayDK < Getdate())
 --Thêm trường điểm thưởng cho bảng giấy đăng kí
 alter table GiayDK
 add DiemThuong int 
+
+--Tạo index và view
+create index IX_TenKhach on ThongTin(TenKH)
+
+create view View_KhachHang as
+select TenKH, SoCMT, DiaChi from GiayDK
+
+create view View_KhachHang_ThueBao as 
+select ThongTin.TenKH, ThongTin.SoCMT, GiayDK.ThueBao from ThongTin
+join GiayDK
+on GiayDK.SoCMT = ThongTin.SoCMT

@@ -96,3 +96,20 @@ alter table DonHang
 add constraint ck_ngaydat check (NgayDat < getDate())
 alter  table MatHang
 add NgayXuat date
+
+--Ex8
+create index IX_Customer on DonHang(TenKhach)
+create index IX_MatHang on MatHang(TenHang)
+
+create view View_KhachHang as 
+select DonHang.TenKhach, DonHang.DiaChi, DonHang.DienThoai from DonHang
+
+select * from View_KhachHang_SanPham
+
+create view View_SanPham as
+select MatHang.TenHang, MatHang.Gia from MatHang
+
+create view View_KhachHang_SanPham as
+select DonHang.TenKhach, DonHang.DienThoai, DonHang.NgayDat, Bill.MatHangID, Bill.SoLuong from DonHang
+join Bill
+on DonHang.KhachHangID = Bill.KhachHangID

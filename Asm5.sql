@@ -64,3 +64,12 @@ add constraint check_date check (NgaySinh<getdate())
 --Thêm trường StartDate cho bảng Danh Bạ
 alter table DanhBa
 add StartDate date
+
+--Tạo index và view 
+create index IX_HoTen on DanhBa(Ten)
+create index IX_DienThoai on DanhBa(DienThoai)
+
+create view View_SoDienThoai as
+select Ten, DienThoai from DanhBa
+create view View_SinhNhat as 
+select Ten, NgaySinh, DienThoai from DanhBa where month(NgaySinh) = 3
