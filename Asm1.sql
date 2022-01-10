@@ -113,3 +113,14 @@ create view View_KhachHang_SanPham as
 select DonHang.TenKhach, DonHang.DienThoai, DonHang.NgayDat, Bill.MatHangID, Bill.SoLuong from DonHang
 join Bill
 on DonHang.KhachHangID = Bill.KhachHangID
+
+create procedure sp_TimKH_MaKH 
+@Id int 
+as
+select * from DonHang 
+where KhachHangID=@Id
+go
+execute sp_Timsp_TimKH_MaKH 1
+go
+
+drop procedure sp_TimKH_MaKH
