@@ -228,3 +228,177 @@ for logon as
 		select EVENTDATA()
 		,GETDATE()
 end;
+
+--Session 13
+--vd1
+use AdventureWorks2019
+go
+create view dbo.vProduct
+as
+select ProductNumber, Name from Production.Product;
+go
+select * from dbo.vProduct;
+go
+
+--vd2
+begin transaction 
+go
+use AdventureWorks2019
+go
+create table Company(
+Id_Num int identity(100, 5),
+CompanyName varchar(100)
+)
+go
+
+insert into Company(CompanyName) values
+(N'A Bike Store'),
+(N'Progressive Sport'),
+(N'Modular Cycle Systems'),
+(N'Advanced Bike Components'),
+(N'Metropolitan Sports Supply'),
+(N'Aerobic Exercise Company'),
+(N'Associated Bike'),
+(N'Exemplary Cycle')
+
+select Id_Num, CompanyName from dbo.Company
+order by CompanyName ASC
+
+--vd3 
+declare @find varchar(30) = 'Man%';
+select p.LastName, p.FirstName, ph.PhoneNumber from Person.Person as p
+join Person.PersonPhone as ph on  p.BusinessEntityID = ph.BusinessEntityID
+where LastName like @find;
+
+--vd4
+declare @myvar char(20);
+set @myvar = 'This is a test';
+
+--vd5
+declare @varl nvarchar(30);
+select @varl = 'Unnamed Company';
+select @varl = Name from Sales.Store where BusinessEntityID = 10;
+select @varl as 'Company Name';
+
+--vd6
+create SYNONYM MyAddressType
+for AdventureWork2019.Person.AddressType;
+go
+
+--vd7
+begin transaction;
+go
+if @@TRANCOUNT = 0 begin
+select FirstName. MiddleName 
+from Person.Person where LastName = 'Andy';
+rollback transaction;
+print N'Rolling back the transaction two times would cause an error.';
+end;
+rollback transaction;
+print N'Rolled back the transaction.'
+go
+
+--vd8
+declare @ListPrice money;
+set @ListPrice = (select max(p.ListPrice) from Production.Product as p
+join Production.ProductSubcategory as s
+on p.ProductSubcategoryID = s.ProductSubcategoryID where s.[Name] = 'Mountain Bikes');
+print @ListPrice
+if @ListPrice < 3000
+print 'All the product in this category can be purchased for an amount less than 300'
+else 
+print 'The prices for some product in this category exceed 3000'
+
+--vd9
+declare @flag int set @flag = 10 while (@flag <=95) begin
+if @flag%2 = 0 print @flag 
+set @flag = @flag + 1
+cotinue; end
+go
+
+--vd10
+if OBJECT_ID (N'Sales.ufn_CustDates', N'IF') is not null 
+drop function Sales.ufn_CustDates
+go
+create function Sales.ufn_CustDates () returns table
+as return (
+select A.CustomerID, B.DueDate, B.ShipDate from Sales.Customer A 
+left outer join Sales.SalesOrderHeader B 
+on A.CustomerID = B.CustomerID and YEAR (B.DueDate)<2020);
+
+--vd11
+select * from Sales.ufn_CustDates();
+
+--vd12
+alter function [dbo].[ufnGetAccountingEndDate] () returns [datetime]
+as begin
+return dateadd(MILLISECOND, -2, convert(datetime, '20040701', 112));
+end;
+
+--vd13
+select SalesOrderID, ProductID, OrderQty, SUM(OrderQty) over(Partition by SalesOrderID) as Total,
+MAX(OrderQty) over (Partition by SalesOrderID) as MaxOrderQty from Sales.SalesOrderDetail
+where ProductID in (776, 773);
+go
+
+--vd14
+select CustomerID, StoreID, 
+RANK() over (ORDER BY StoreID DESC) as Rnk_All, RANK() over (Partition by PersonID
+order by CustomerID DESC) as Rnk_Cust
+from Sales.Customer;
+
+--vd15
+select TerritoryID, Name, SalesYTD, RANK() over (order by SalesYTD DESC) as Rnk_One, RANK() over (Partition by TerritoryID
+order by SalesYTD DESC) as Rnk_Two
+from Sales.SalesTerritory;
+
+--vd16
+select ProductID, Shelf, Quantity, SUM(Quantity) over (Partition by ProductID
+order by LocationID 
+rows between unbounded preceding and current row) as RunQty
+from Production.ProductInventory;
+
+--vd17
+select p.FirstName, p.LastName,
+ROW_NUMBER() over (order by a.PostalCode) as 'Row Number',
+NTILE(4) over (order by a.PostalCode) as 'NTILE',
+s.SalesYTD, a.PostalCode from Sales.SalesPerson as s
+inner join Person.Person as p
+on s.BusinessEntityID = p.BusinessEntityID
+inner join Person.Address as a
+on a.AddressID = p.BusinessEntityID
+where TerritoryID is not null and SalesYTD <>0;
+
+--vd18
+create table Test(
+ColDatetimeoffset datetimeoffset
+);
+go
+insert into test 
+values ('1998-09-20 7:45:50.71345 - 5:00');
+go
+select SWITCHOFFSET (ColDatetimeoffset, '-08:00')
+from Test;	
+go
+--Returns: 1998-09-20 04:45:50.71345 - 08:00
+select ColDatetimeoffset
+from Test;
+
+--vd19
+select DATETIMEOFFSETFROMPARTS (2010, 12, 31, 14, 23, 23, 0, 12, 0, 7)
+as Result;
+
+--vd20
+select SYSDATETIME() as SYSDATETIME,
+SYSDATETIMEOFFSET() as SYSDATETIMEOFFSET,
+SYSUTCDATETIME() as SYSUTCDATETIME
+
+--vd21
+select BusinessEntityID, YEAR(QuotaDate) as QuotaYear, SalesQuota as NewQuota,
+LEAD(SalesQuota, 1, 0) over (order by Year(QuotaDate)) as FutureQuota from Sales.SalesPersonQuotaHistory
+where BusinessEntityID = 275 and Year(QuotaDate) in ('2011', '2014');
+
+--vd22
+select Name, ListPrice,
+FIRST_VALUE(Name) over (Order by ListPrice ASC) as LessExpensive from Production.Product
+where ProductSubcategoryID = 37
