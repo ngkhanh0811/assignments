@@ -111,3 +111,27 @@ create view View_SanPham_Hang as
 select Kho.MaSP, Kho.TenSP, Hang.TenHang from Kho
 join Hang
 on Kho.MaHang = Hang.MaHang
+
+--Ex8
+create trigger TG_Xoa_SanPham
+on Kho
+for delete
+as
+	declare @SL int
+	select @SL = deleted.SoLuong from deleted 
+	where deleted.SoLuong = 0
+	if @SL is null
+	begin
+	rollback transaction;
+	print N'Không thể xóa'
+end
+go
+
+delete from Kho where SoLuong = 3
+
+update Kho
+set SoLuong = 0
+where MaHang = 124
+go
+
+select * from Kho
