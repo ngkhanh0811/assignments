@@ -103,3 +103,17 @@ select MaSP, NgaySX, TenLoai from Phieu
 
 create view View_SanPham_Top as
 select MaSP, TenLoai, NgaySX from Phieu
+
+create proc SP_Them_LoaiSP
+as
+insert into LoaiSP values ('X5', N'Máy tính bảng')
+go
+exec SP_Them_LoaiSP
+go
+
+create proc SP_Them_NCTN
+as
+insert into Nguoi values (N'Nguyễn Bá Khánh', 81104)
+go
+exec SP_ThemNCTN
+go

@@ -113,6 +113,27 @@ join Hang
 on Kho.MaHang = Hang.MaHang
 
 --Ex8
+create proc SP_SanPham_TenHang as
+select * from Hang 
+go
+
+create proc SP_SanPham_Gia as
+select * from Kho where Kho.Gia > 10000
+go
+
+create proc SP_SanPham_HetHang as
+select * from Kho where Kho.SoLuong = 0
+go
+
+create trigger TG_Xoa_Hang 
+on Hang
+for delete
+as
+	begin
+	rollback transaction;
+	print N'Không được phép xóa hãng'
+end
+
 create trigger TG_Xoa_SanPham
 on Kho
 for delete

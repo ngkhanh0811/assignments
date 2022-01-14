@@ -103,3 +103,38 @@ create view View_KhachHang_ThueBao as
 select ThongTin.TenKH, ThongTin.SoCMT, GiayDK.ThueBao from ThongTin
 join GiayDK
 on GiayDK.SoCMT = ThongTin.SoCMT
+
+--Tạo procedure
+create proc SP_TimKH_ThueBao 
+@ThueBao varchar(100)
+as
+select * from ThongTin
+join GiayDK 
+on GiayDK.SoCMT = ThongTin.SoCMT 
+where GiayDK.ThueBao = @ThueBao 
+go
+exec SP_TimKH_ThueBao '0987729543'
+go
+
+create proc SP_TimTB_KhachHang 
+@TenKH nvarchar(100)
+as
+select * from GiayDK where TenKH = @TenKH
+go
+exec SP_TimTB_KhachHang N'Nguyễn Bá Khánh'
+go
+
+create proc SP_ThemTB 
+as
+insert into GiayDK values (N'Nguyễn Bá Khánh', 00123456789, N'Hà Nội', '0987758543', N'Trả trước', '2021-12-31', '')
+go
+exec SP_ThemTB
+go
+
+create proc SP_HuyTB_MaKH 
+@MaKH int
+as
+delete from GiayDK where GiayDK.SoCMT = @MaKH 
+go
+exec SP_HuyTB_MaKH 001203025446
+go

@@ -120,7 +120,29 @@ as
 select * from DonHang 
 where KhachHangID=@Id
 go
-execute sp_Timsp_TimKH_MaKH 1
+
+execute sp_TimKH_MaKH 1
 go
 
-drop procedure sp_TimKH_MaKH
+create proc SP_TimKH_MaHD
+@Ma int
+as 
+select * from DonHang
+join Bill 
+on DonHang.KhachHangID = Bill.KhachHangID
+where DonHang.KhachHangID = @Ma 
+go
+exec SP_TimKH_MaHD 1
+go
+
+create proc SP_SanPham_MaKH
+@So int
+as
+select * from DonHang
+join Bill
+on DonHang.KhachHangID = Bill.KhachHangID
+where DonHang.KhachHangID = @So
+go
+
+exec SP_SanPham_MaKH 2
+go
