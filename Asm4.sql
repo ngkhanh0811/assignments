@@ -117,3 +117,25 @@ insert into Nguoi values (N'Nguyễn Bá Khánh', 81104)
 go
 exec SP_ThemNCTN
 go
+
+create proc SP_Them_SanPham
+as
+insert into SanPham values ('2018-12-27', N'Máy tính xách tay X3000', 'X3000', '') 
+go
+exec SP_Them_SanPham
+
+create proc SP_Xoa_SanPham
+@Ma varchar(100)
+as
+delete from Phieu where @Ma = Phieu.MaSP
+go
+exec SP_Xoa_SanPham 'X1000'
+go
+
+create proc SP_Xoa_SanPham_TheoLoai
+@Loai varchar(100)
+as
+delete from Phieu where @Loai = Phieu.MaLoai
+go
+exec SP_Xoa_SanPham_TheoLoai 'X2'
+go

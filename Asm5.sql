@@ -73,3 +73,17 @@ create view View_SoDienThoai as
 select Ten, DienThoai from DanhBa
 create view View_SinhNhat as 
 select Ten, NgaySinh, DienThoai from DanhBa where month(NgaySinh) = 3
+
+create proc SP_Them_DanhBa as
+insert into DanhBa values (N'Nguyễn Bá Khánh', N'Hà Nội', '0934695342', '2003-11-08', '')
+go
+exec SP_Them_DanhBa 
+go
+
+create proc SP_Tim_DanhBa 
+@Ten nvarchar(100)
+as
+select * from DanhBa where @Ten = Ten
+go
+exec SP_Tim_DanhBa N'Nguyễn Bá Khánh'
+go
